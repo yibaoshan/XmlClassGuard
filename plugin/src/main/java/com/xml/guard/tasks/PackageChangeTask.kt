@@ -1,13 +1,9 @@
 package com.xml.guard.tasks
 
+import com.google.gson.GsonBuilder
 import com.xml.guard.entensions.GuardExtension
-import com.xml.guard.utils.allDependencyAndroidProjects
-import com.xml.guard.utils.findPackage
-import com.xml.guard.utils.findXmlDirs
-import com.xml.guard.utils.insertImportXxxIfAbsent
-import com.xml.guard.utils.javaDirs
-import com.xml.guard.utils.manifestFile
-import com.xml.guard.utils.replaceWords
+import com.xml.guard.model.AppConfig
+import com.xml.guard.utils.*
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
@@ -40,6 +36,13 @@ open class PackageChangeTask @Inject constructor(
         val oldPackage: String = findPackage()
         val newPackage = map[oldPackage] ?: return
         val dirs = findXmlDirs(variantName, "layout")
+
+        try {
+            replaceAndroidClassInJson(assetsFile().absolutePath + "/" + guardExtension.assetsConfigPath, oldPackage, newPackage)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         dirs.add(manifestFile())
         dirs.add(buildFile)
         //1、修改layout文件、AndroidManifest文件、build.gradle文件
@@ -96,4 +99,26 @@ open class PackageChangeTask @Inject constructor(
             .replaceWords("""app:layoutManager=".""", """app:layoutManager="$oldPackage.""")
             .let { writeText(it) }
     }
+
+    // 替换 json 文件中的 act 路径
+    private fun replaceAndroidClassInJson(jsonFilePath: String, oldPackage: String, newPackage: String) {
+        val jsonString = File(jsonFilePath).readText(Charsets.UTF_8)
+        val gson = GsonBuilder().disableHtmlEscaping().create()
+        val appConfig = gson.fromJson(jsonString, AppConfig::class.java)
+
+        appConfig.routeList = appConfig.routeList?.map { route ->
+            try {
+                route.copy(
+                    androidClass = route.androidClass?.replace(oldPackage, newPackage),
+                    url = route.url?.replace("nuan", guardExtension.name ?: "nuan")
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } as AppConfig.RouteListDTO
+        }
+
+        val updatedJsonString = gson.toJson(appConfig)
+        File(jsonFilePath).writeText(updatedJsonString, Charsets.UTF_8)
+    }
+
 }

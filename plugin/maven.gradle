@@ -1,12 +1,48 @@
 apply plugin: 'maven-publish'
 
 publishing {
+
     publications {
+        // 正式版本
         release(MavenPublication) {
             from components.java
             groupId 'com.github.liujingxing'
             artifactId 'XmlClassGuard'
-            version "$plugin_version"
+            version "1.0.0-gradle-7x-base-1.2.2"
+        }
+        // 快照版本
+        snapshot(MavenPublication) {
+            from components.java
+            groupId 'com.github.liujingxing'
+            artifactId 'XmlClassGuard'
+            version "1.0.0-gradle-7x-base-1.2.2-SNAPSHOT"
+        }
+
+    }
+
+    repositories {
+
+        // 输出到本地，调试用
+//        maven { url uri("${rootDir}/release-local") }
+
+        // 上传到内网仓库
+        maven {
+
+            // 默认全部注释掉 url ，防止误传
+
+            // 正式 Maven 仓库
+//            url = maven_url
+            // 快照仓库
+//            url = maven_url_snapshot
+
+            allowInsecureProtocol true
+
+            credentials {
+                it.username = maven_name
+                it.password = maven_password
+            }
+
         }
     }
+
 }

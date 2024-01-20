@@ -5,6 +5,13 @@ pluginManagement {
         mavenCentral()
         if ("true" == useMavenLocal) {
             mavenLocal()
+            maven {
+                url uri('./release-local')
+            }
+        }
+        maven {
+            url 'http://nexus.yizhoucp.cn/repository/maven-all/'
+            allowInsecureProtocol = true
         }
         maven { url 'https://jitpack.io' }
         maven { url 'https://raw.githubusercontent.com/martinloren/AabResGuard/mvn-repo' }
@@ -15,6 +22,16 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url 'http://nexus.yizhoucp.cn/repository/maven-all/'
+            allowInsecureProtocol = true
+        }
+        if ("true" == useMavenLocal) {
+            mavenLocal()
+            maven {
+                url uri('./release-local')
+            }
+        }
         maven { url 'https://raw.githubusercontent.com/martinloren/AabResGuard/mvn-repo' }
         jcenter()   //AndResGuard在jcenter上
     }

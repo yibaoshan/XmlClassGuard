@@ -26,15 +26,14 @@ dependencies {
     compileOnly gradleApi()
     api 'org.codehaus.groovy:groovy-xml:3.0.13'
     implementation 'org.ow2.asm:asm:9.3'
-    compileOnly 'com.android.tools.build:gradle:8.0.2'
+
+    compileOnly 'com.google.code.gson:gson:2.8.8'
+    compileOnly 'com.android.tools.build:gradle:7.2.2'
     compileOnly "com.bytedance.android:aabresguard-plugin:0.1.10"
     compileOnly 'com.tencent.mm:AndResGuard-gradle-plugin:1.2.21'
 
     testImplementation 'junit:junit:4.13.2'
 }
-
-sourceCompatibility = "$jdk_version"
-targetCompatibility = "$jdk_version"
 
 kotlin {
     jvmToolchain(jdk_version as int)

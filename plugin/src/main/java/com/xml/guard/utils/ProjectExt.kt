@@ -111,6 +111,12 @@ fun Project.manifestFile(): File {
     return sourceSet.getByName("main").manifest.srcFile
 }
 
+// 返回 app 级目录下的 assets
+fun Project.assetsFile(): File {
+    val android = extensions.getByName("android") as com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+    return android.sourceSets.getByName("main").assets.srcDirs.single()
+}
+
 
 //查找依赖的Android Project，也就是子 module，包括间接依赖的子 module
 fun Project.findDependencyAndroidProject(

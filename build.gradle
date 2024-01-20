@@ -2,14 +2,14 @@
 buildscript {
     dependencies {
         classpath "com.bytedance.android:aabresguard-plugin:0.1.10"
-        classpath "com.github.liujingxing:XmlClassGuard:$plugin_version"
+        classpath "com.github.liujingxing:XmlClassGuard:1.0.0-gradle-7x-base-1.2.2"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3"
     }
 }
 
 plugins {
-    id 'com.android.application' version '8.0.2' apply false
-    id 'com.android.library' version '8.0.2' apply false
+    id 'com.android.application' version '7.2.2' apply false
+    id 'com.android.library' version '7.2.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
 }
 
