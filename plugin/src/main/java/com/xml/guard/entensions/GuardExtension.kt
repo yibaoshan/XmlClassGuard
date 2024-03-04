@@ -31,9 +31,6 @@ open class GuardExtension {
 
     var moveDir = HashMap<String, String>()
 
-    // 本地的 route 列表，随着 manifest 文件中 package 路径一并变更
-    var assetsConfigPath: String? = null
-
     constructor(name: String?) {
         this.name = name
     }

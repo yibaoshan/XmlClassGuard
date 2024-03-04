@@ -60,7 +60,6 @@ class XmlClassGuardPlugin : Plugin<Project> {
         createTask("${variant.name}XmlClassGuard", XmlClassGuardTask::class, guardExt, variantName)
         createTask("${variant.name}PackageChange", PackageChangeTask::class, guardExt, variantName)
         createTask("${variant.name}MoveDir", MoveDirTask::class, guardExt, variantName)
-        createTask("${variant.name}FlavorXmlClassGuard", PackageTask::class, guardExt, variant.name)
         if (guardExt.findAndConstraintReferencedIds) {
             createAndFindConstraintReferencedIdsTask(variantName)
         }
