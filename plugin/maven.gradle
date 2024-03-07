@@ -13,21 +13,23 @@ publishing {
 
     repositories {
 
-        // 输出到本地，调试用
-//        maven { url uri("${rootDir}/release-local") }
+        if ("true" == useMavenLocal) {
+            // 输出到本地，调试用
+            maven { url uri("${rootDir}/release-local") }
+        } else {
+            // 上传到内网仓库
+            maven {
 
-        // 上传到内网仓库
-        maven {
+                url push_version.endsWith('SNAPSHOT') ? maven_url_snapshot : maven_url
 
-            url push_version.endsWith('SNAPSHOT') ? maven_url_snapshot : maven_url
+                allowInsecureProtocol true
 
-            allowInsecureProtocol true
+                credentials {
+                    it.username = maven_name
+                    it.password = maven_password
+                }
 
-            credentials {
-                it.username = maven_name
-                it.password = maven_password
             }
-
         }
     }
 
