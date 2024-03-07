@@ -4,38 +4,18 @@ apply plugin: "xml-class-guard"
 xmlClassGuard {
 
     variantConfig {
-        def couduiConfig = {
+
+        def appleConfig = {
             mappingFile = file("xml-class-mapping.txt")
             //更改manifest里package属性
             packageChange = ["com.ljx.example": "com.ljx.example"]
             //移动目录，支持同时移动多个目录
             moveDir = ["com.ljx.example": "com.ljx.example"]
-            assetsConfigPath = "init/config.json"
-        }
-        def huayuanConfig = {
-            mappingFile = file("xml-class-mapping.txt")
-            //更改manifest里package属性
-            packageChange = ["com.ljx.example": "com.ljx.example"]
-            //移动目录，支持同时移动多个目录
-            moveDir = ["com.ljx.example": "com.ljx.example"]
-            assetsConfigPath = "init/config.json"
-        }
-        def lianainiangConfig = {
-            mappingFile = file("xml-class-mapping.txt")
-            //更改manifest里package属性
-            packageChange = ["com.ljx.example": "com.ljx.example"]
-            //移动目录，支持同时移动多个目录
-            moveDir = ["com.ljx.example": "com.ljx.example"]
-            assetsConfigPath = "init/config.json"
         }
 
         variantConfig {
-            huayuanRelease huayuanConfig
-            huayuanDebug huayuanConfig
-            couduiRelease couduiConfig
-            couduiDebug couduiConfig
-            lianainiangRelease lianainiangConfig
-            lianainiangDebug lianainiangConfig
+            appleRelease appleConfig
+            appleDebug appleConfig
         }
     }
 }

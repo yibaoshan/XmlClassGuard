@@ -4,7 +4,6 @@ plugins {
     id 'androidx.navigation.safeargs'
 }
 apply from: 'aabresguard.gradle'
-
 apply from: 'xmlclassguard.gradle'
 
 android {
@@ -24,19 +23,12 @@ android {
     flavorDimensions "package"
 
     productFlavors {
-        lanling {
+
+        apple {
             dimension "package"
         }
 
-        coudui {
-            dimension "package"
-        }
-
-        huayuan {
-            dimension "package"
-        }
-
-        lianainiang {
+        microsoft {
             dimension "package"
         }
 

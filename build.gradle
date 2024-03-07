@@ -2,8 +2,9 @@
 buildscript {
     dependencies {
         classpath "com.bytedance.android:aabresguard-plugin:0.1.10"
-        classpath "com.github.liujingxing:XmlClassGuard:1.0.0-gradle-7x-base-1.2.2"
+        classpath "com.github.liujingxing:XmlClassGuard:$push_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3"
+
     }
 }
 
