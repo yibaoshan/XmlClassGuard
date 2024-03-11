@@ -57,9 +57,9 @@ class XmlClassGuardPlugin : Plugin<Project> {
 
     private fun Project.createTasks(guardExt: GuardExtension, variant: ApplicationVariant) {
         val variantName = variant.name.capitalize()
-        createTask("${variant.name}XmlClassGuard", XmlClassGuardTask::class, guardExt, variantName)
-        createTask("${variant.name}PackageChange", PackageChangeTask::class, guardExt, variantName)
-        createTask("${variant.name}MoveDir", MoveDirTask::class, guardExt, variantName)
+        createTask("${variant.name}XmlClassGuard", XmlClassGuardTask::class, guardExt, variantName, variant.flavorName)
+        createTask("${variant.name}PackageChange", PackageChangeTask::class, guardExt, variantName, variant.flavorName)
+        createTask("${variant.name}MoveDir", MoveDirTask::class, guardExt, variantName, variant.flavorName)
         if (guardExt.findAndConstraintReferencedIds) {
             createAndFindConstraintReferencedIdsTask(variantName)
         }

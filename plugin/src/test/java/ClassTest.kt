@@ -1,9 +1,13 @@
+import com.xml.guard.model.MappingParser
 import com.xml.guard.transform.MyClassWriter
+import com.xml.guard.utils.to26Long
 import org.junit.Test
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 import java.io.File
+import java.util.regex.Pattern
+import kotlin.math.pow
 
 /**
  * User: ljx
@@ -12,26 +16,31 @@ import java.io.File
  */
 class ClassTest {
 
+    private val UPPERCASE_PATTERN: Pattern = Pattern.compile("^[A-Z]+$")
+
     @Test
     fun test() {
-        val writer = ClassWriter(0)
-        writer.visit(
-            Opcodes.V1_7,
-            Opcodes.ACC_PUBLIC,
-            "com/example/test/TestData",
-            null,
-            "java/lang/Object",
-            null
-        )
-        writer.visitField(Opcodes.ACC_PUBLIC, "valInt", Type.INT_TYPE.descriptor, null, 0)
-        writer.visitField(
-            Opcodes.ACC_PUBLIC, "valStr", Type.getDescriptor(
-                String::class.java
-            ), null, null
-        )
-        writer.visitEnd()
-        val classBytes = writer.toByteArray()
-        File("TestData.class").writeBytes(classBytes)
+        println("FF".to26Long())
+    }
+
+    fun String.to26Long(): Long {
+        val regexMixedCaseAndDigits = "^[a-zA-Z0-9]+$" // 允许大小写混合和数字
+        val isMixedCaseAndDigits = Pattern.matches(regexMixedCaseAndDigits, this)
+        if (!isMixedCaseAndDigits) {
+            throw IllegalArgumentException("string must consist of mixed upper and lowercase letters and digits, but it was $this")
+        }
+
+        var num = 0L
+        for (i in indices) {
+            val c = get(i)
+            val charValue = when {
+                c.isUpperCase() -> c - 'A'
+                c.isLowerCase() -> c - 'a' + 26 // 使小写字母的值位于大写字母之后
+                else -> c - '0' + 52 // 使数字的值位于字母之后
+            }
+            num += (charValue * 62.0.pow((length - 1 - i).toDouble())).toLong()
+        }
+        return num
     }
 
     @Test

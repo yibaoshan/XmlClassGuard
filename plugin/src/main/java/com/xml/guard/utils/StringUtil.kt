@@ -120,19 +120,21 @@ fun Long.toLetterStr(upperCase: Boolean = false): String {
 
 //字符串转Long, 必须是大写或小写字母, 不能是大小写混合
 fun String.to26Long(): Long {
-    val regexLowercase = "^[a-z]+$"
-    val regexUppercase = "^[A-Z]+$"
-    val isLowercase = Pattern.matches(regexLowercase, this)
-    val isUppercase = if (isLowercase) false else Pattern.matches(regexUppercase, this)
-    if (!isLowercase && !isUppercase) {
-        throw IllegalArgumentException("string must be uppercase or lowercase but it was $this")
+    val regexMixedCaseAndDigits = "^[a-zA-Z0-9]+$" // 允许大小写混合和数字
+    val isMixedCaseAndDigits = Pattern.matches(regexMixedCaseAndDigits, this)
+    if (!isMixedCaseAndDigits) {
+        throw IllegalArgumentException("string must consist of mixed upper and lowercase letters and digits, but it was $this")
     }
-    val offSize = if (isUppercase) 65 else 97
-    val length = length
+
     var num = 0L
-    for (i in 0 until length) {
+    for (i in indices) {
         val c = get(i)
-        num += ((c.code - offSize) * 26.0.pow((length - 1 - i).toDouble())).toLong()
+        val charValue = when {
+            c.isUpperCase() -> c - 'A'
+            c.isLowerCase() -> c - 'a' + 26 // 使小写字母的值位于大写字母之后
+            else -> c - '0' + 52 // 使数字的值位于字母之后
+        }
+        num += (charValue * 62.0.pow((length - 1 - i).toDouble())).toLong()
     }
     return num
 }

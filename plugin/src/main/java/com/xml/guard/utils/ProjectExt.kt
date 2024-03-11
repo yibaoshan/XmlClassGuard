@@ -111,12 +111,22 @@ fun Project.manifestFile(): File {
     return sourceSet.getByName("main").manifest.srcFile
 }
 
+fun Project.manifestFiles(flavorName: String): List<File> {
+    val sourceSet = (extensions.getByName("android") as BaseExtension).sourceSets
+    val ret = arrayListOf(sourceSet.getByName("main").manifest.srcFile)
+    try {
+        ret.add(sourceSet.getByName(flavorName).manifest.srcFile)
+    } catch (e: Exception) {
+        // 忽略
+    }
+    return ret
+}
+
 // 返回 app 级目录下的 assets
 fun Project.assetsFile(): File {
     val android = extensions.getByName("android") as com.android.build.gradle.internal.dsl.BaseAppModuleExtension
     return android.sourceSets.getByName("main").assets.srcDirs.single()
 }
-
 
 //查找依赖的Android Project，也就是子 module，包括间接依赖的子 module
 fun Project.findDependencyAndroidProject(

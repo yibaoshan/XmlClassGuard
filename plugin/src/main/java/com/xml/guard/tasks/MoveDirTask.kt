@@ -1,14 +1,7 @@
 package com.xml.guard.tasks
 
 import com.xml.guard.entensions.GuardExtension
-import com.xml.guard.utils.aidlDirs
-import com.xml.guard.utils.allDependencyAndroidProjects
-import com.xml.guard.utils.findPackage
-import com.xml.guard.utils.findXmlDirs
-import com.xml.guard.utils.insertImportXxxIfAbsent
-import com.xml.guard.utils.javaDirs
-import com.xml.guard.utils.manifestFile
-import com.xml.guard.utils.replaceWords
+import com.xml.guard.utils.*
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
@@ -23,6 +16,7 @@ import javax.inject.Inject
 open class MoveDirTask @Inject constructor(
     private val guardExtension: GuardExtension,
     private val variantName: String,
+    private val flavorName: String
 ) : DefaultTask() {
 
     init {
@@ -41,7 +35,7 @@ open class MoveDirTask @Inject constructor(
         val manifestPackage = findPackage()  //查找清单文件里的package属性值
         //1、替换manifest文件 、layout、navigation、xml目录下的文件、Java、Kt文件
         val dirs = findXmlDirs(variantName, "layout", "navigation", "xml")
-        dirs.add(manifestFile())
+        dirs.addAll(manifestFiles(flavorName))
         val aidlDirs = aidlDirs(variantName)
         dirs.addAll(aidlDirs)
         val javaDirs = javaDirs(variantName)

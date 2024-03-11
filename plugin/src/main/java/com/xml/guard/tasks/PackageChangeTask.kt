@@ -16,6 +16,7 @@ import javax.inject.Inject
 open class PackageChangeTask @Inject constructor(
     private val guardExtension: GuardExtension,
     private val variantName: String,
+    private val flavorName: String
 ) : DefaultTask() {
 
     init {
@@ -35,7 +36,7 @@ open class PackageChangeTask @Inject constructor(
         val newPackage = map[oldPackage] ?: return
         val dirs = findXmlDirs(variantName, "layout")
 
-        dirs.add(manifestFile())
+        dirs.addAll(manifestFiles(flavorName))
         dirs.add(buildFile)
         //1、修改layout文件、AndroidManifest文件、build.gradle文件
         files(dirs).asFileTree.forEach { file ->

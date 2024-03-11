@@ -68,7 +68,7 @@ class Mapping {
                 if (rawDir == manifestPackage) {
                     file.insertImportXxxIfAbsent(manifestPackage)
                 }
-                val obfuscatePath = obfuscatePath(rawClassPath)  //混淆后 xx.Xxx
+                val obfuscatePath = obfuscatePath(rawClassPath, variantName)  //混淆后 xx.Xxx
                 val obfuscateRelativePath = obfuscatePath.replace(".", File.separator) //混淆后 xx/Xxx
                 val rawRelativePath = rawClassPath.replace(".", File.separator) //原始 xx/Xxx
                 //替换原始类路径
@@ -102,7 +102,7 @@ class Mapping {
     fun isObfuscated(rawClassPath: String) = classMapping.containsValue(rawClassPath)
 
     //混淆包名+类名，返回混淆后的包名+类名
-    fun obfuscatePath(classPath: String): String {
+    fun obfuscatePath(classPath: String, variantName: String): String {
         var innerClassName: String? = null //内部类类名
         val rawClassPath = if (isInnerClass(classPath)) {
             val arr = classPath.split("$")
@@ -115,7 +115,7 @@ class Mapping {
         if (obfuscateClassPath == null) {
             val rawPackage = rawClassPath.getDirPath()
             val obfuscatePackage = obfuscatePackage(rawPackage)
-            obfuscateClassPath = "$obfuscatePackage.${generateObfuscateClassName()}"
+            obfuscateClassPath = "$obfuscatePackage.${generateObfuscateClassName(variantName, classPath)}"
             classMapping[rawClassPath] = obfuscateClassPath
         }
         return if (innerClassName != null) "$obfuscateClassPath\$$innerClassName" else obfuscateClassPath
@@ -145,7 +145,9 @@ class Mapping {
     private fun obfuscatePackage(rawPackage: String): String {
         var obfuscatePackage = dirMapping[rawPackage]
         if (obfuscatePackage == null) {
-            obfuscatePackage = generateObfuscatePackageName()
+//            obfuscatePackage = generateObfuscatePackageName()
+            // 不混淆包名 update on 2024/03/11
+            obfuscatePackage = rawPackage
             dirMapping[rawPackage] = obfuscatePackage
         }
         return obfuscatePackage
@@ -161,9 +163,27 @@ class Mapping {
     }
 
     //生成混淆的类名
-    private fun generateObfuscateClassName(): String {
+    private fun generateObfuscateClassName(variantName: String, classPath: String): String {
+        var obfuscateClassName: String
+        var prefix = variantName.capitalize()
+        if (variantName.contains("Debug")) prefix = variantName.substring(0, variantName.indexOf("Debug"))
+        else if (variantName.contains("Release")) prefix = variantName.substring(0, variantName.indexOf("Release"))
+        try {
+            val className = classPath.substring(classPath.lastIndexOf(".") + 1, classPath.length)
+            if (className.contains("Activity")
+                || className.contains("Fragment")
+                || className.contains("Dialog")
+                || className.contains("Layout")
+                || className.contains("View")
+                || className.contains("Button")
+            ) {
+                return prefix + className
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         while (true) {
-            val obfuscateClassName = (++classIndex).toUpperLetterStr()
+            obfuscateClassName = prefix + (++classIndex).toUpperLetterStr()
             if (!obfuscateClassName.inClassNameBlackList()) //过滤黑名单
                 return obfuscateClassName
         }
